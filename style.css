@@ -1,0 +1,189 @@
+/* Import Google font - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+body {
+  height: 100vh;
+  
+  align-items: center;
+  justify-content: left;
+  background: linear-gradient(45deg, #0acc5b, #ed64ff);
+}
+.rating-box {
+  position: relative;
+  background: #fff;
+  padding: 25px 50px 35px;
+  border-radius: 25px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+
+/* Dropdown Button */
+.dropbtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  left: 100%;        /* This makes it appear to the right of the button */
+  top: 0;           /* Aligns with the top of the button */
+  background-color: #f1f1f1;
+  min-width: 60px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+
+/* INTENTO 2 - Updated with unique class names */
+/* Nested Dropdown System */
+.dd-container {
+  position: relative;
+  display: inline-block;
+}
+
+.dd-container .dropbtn {
+  background-color: #04AA6D;
+  color: white;
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dd-list {
+  background: #fff;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  display: none;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  min-width: 55px;
+  z-index: 1000; /* Ensure dropdowns appear above others */
+}
+
+/* For nested dropdowns inside list items */
+.dd-item {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+.dd-link {
+  text-decoration: none;
+  color: black;
+  display: block;
+  padding: 4px 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* Style for the "mas" link that has nested dropdown */
+.dd-item.dd-container > .dd-link::after {
+  position: absolute;
+  right: 8px;
+}
+
+.dd-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Show dropdown on hover */
+.dd-container:hover > .dd-list {
+  display: block;
+}
+
+/* For nested dropdowns - show when hovering the parent item */
+.dd-item.dd-container:hover > .dd-list {
+  display: block;
+}
+
+/* Change button color on hover */
+.dd-container:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+
+
+
+/* Main alphabet container styling */
+#recursive-dropdown .dd-container {
+    background-color: #04AA6D;
+    display: inline-block;
+    border-radius: 4px;
+}
+
+/* Style the main alphabet list */
+#recursive-dropdown > .dd-container > .dd-list {
+    display: flex;
+    flex-wrap: wrap;
+    position: relative;
+    left: 0;
+    top: 0;
+    min-width: auto;
+    background-color: #04AA6D;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* Style the main alphabet items */
+#recursive-dropdown > .dd-container > .dd-list > .dd-item {
+    margin: 2px;
+}
+
+#recursive-dropdown > .dd-container > .dd-list > .dd-item > .dd-link {
+    color: white;
+    padding: 8px 12px;
+    background-color: #04AA6D;
+    border-radius: 3px;
+    display: block;
+}
+
+#recursive-dropdown > .dd-container > .dd-list > .dd-item:hover > .dd-link {
+    background-color: #3e8e41;
+}
+
+/* Nested dropdowns keep the original styling */
+.dd-list .dd-list {
+    background: #fff;
+    left: 100%;
+    top: 0;
+}
+
+.dd-list .dd-list .dd-link {
+    color: black;
+    background: white;
+}
+
