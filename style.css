@@ -33,54 +33,78 @@ body {
   border-radius: 8px;
 }
 
+/* Container for dropdowns */
 .dd-container {
   position: relative;
   display: inline-block;
 }
 
-/* Dropdown lists appear vertically */
-.dd-list {
+/* Root dropdown list */
+.root > .dd-list {
   display: none;
   position: absolute;
-  top: 0;
-  left: 100%; /* makes nested menus appear to the right */
+  top: 100%;
+  left: 0;
+  min-width: 40px;
   background: #f9f9f9;
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
   list-style: none;
   padding: 5px 0;
-  min-width: 50px; /* Reduced width */
   border-radius: 6px;
   z-index: 1000;
+  pointer-events: auto;
 }
 
-/* Top-level dropdown starts below the button */
-.root > .dd-list {
-  top: 100%;
-  left: 0;
-  min-width: 40px; /* Even smaller for main dropdown */
+/* Show root dropdown only when .open */
+.root.open > .dd-list {
+  display: block;
 }
 
-/* Each nested dropdown cascades to the right */
+/* Nested dropdowns */
+.dd-item.dd-container > .dd-list {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  min-width: 50px;
+  background: #f9f9f9;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  list-style: none;
+  padding: 5px 0;
+  border-radius: 6px;
+  z-index: 1000;
+  pointer-events: auto;
+}
+
+/* Show nested dropdown when open */
+.dd-item.dd-container > .dd-list.open {
+  display: block;
+}
+
+/* Each item */
 .dd-item {
   position: relative;
+  display: block;
+  width: 100%;
 }
 
-/* Styling for each item link */
+/* Links */
 .dd-link {
   color: black;
-  padding: 8px 12px; /* Adjusted padding */
+  padding: 8px 12px;
   display: block;
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
-  font-size: 14px; /* Slightly smaller font */
+  font-size: 14px;
   line-height: 1.2;
 }
 
-.dd-link:hover { /*  */
+.dd-link:hover {
   background-color: #7bfbb0;
 }
 
+/* Loading item */
 .dd-loading {
   color: #ff3b45;
   font-style: italic;
@@ -89,18 +113,18 @@ body {
   white-space: nowrap;
 }
 
-/* Show dropdowns on hover */
-/* .dd-item.dd-container:hover > .dd-list,
-.dd-container.root:hover > .dd-list {
-  display: block;
-} */
+/* Keep parent letter highlighted when its dropdown is open */
+.dd-item.dd-container:hover > .dd-link {
+  background-color: #7bfbb0;
+  color: #000;
+}
 
 /* Button hover */
 .dd-container:hover > .dropbtn {
   background-color: rgb(145, 245, 149);
 }
 
-/* Prevent hover gaps */
+/* Prevent gaps between parent and child dropdowns */
 .dd-item.dd-container > .dd-list {
   margin-left: -1px;
 }
@@ -109,47 +133,4 @@ body {
 .dd-list {
   width: auto;
   max-width: none;
-}
-
-.dd-item {
-  display: block;
-  width: 100%;
-}
-
-/* Keep the parent letter highlighted while its dropdown is open */
-.dd-item.dd-container:hover > .dd-link {
-  background-color: #7bfbb0 ; /* same as hover */
-  color: #000;
-}
-
-.dd-container.root .dd-list {
-  display: none;
-}
-
-.dd-container.root.open .dd-list {
-  display: block;
-}
-/* Default hidden */
-.dd-list {
-  display: none;
-}
-
-/* Show on hover OR if explicitly open */
-.dd-container:hover > .dd-list,
-.dd-list.open {
-  display: block;
-}
-
-.dd-list {
-  display: none;
-}
-
-/* Show only if parent is hovered AND it's open (for nested ones) */
-.dd-container:hover > .dd-list.open {
-  display: block;
-}
-
-/* Root dropdown can also open manually */
-.root > .dd-list.open {
-  display: block;
 }

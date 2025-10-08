@@ -12,15 +12,38 @@ function generateAlphabetItems(parentId, level = 1) {
     `;
   }).join('');
 }
+function addHoverListeners(container) {
+  container.querySelectorAll('.dd-item.dd-container').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+      loadDropdownContent(item);
+      const list = item.querySelector('.dd-list');
+      list.classList.add('open');
+    });
+  });
+}
 
 function loadDropdownContent(container) {
   const id = container.dataset.id;
   if (loadedDropdowns.has(id)) return;
 
   const ul = container.querySelector('.dd-list');
-  ul.innerHTML = generateAlphabetItems(id, (parseInt(container.dataset.level) || 1) + 1);
+
+  // Close sibling dropdowns
+  Array.from(container.parentElement.children)
+    .filter(c => c !== container && c.classList.contains('dd-container'))
+    .forEach(sib => {
+      const sibList = sib.querySelector('.dd-list');
+      if (sibList) sibList.classList.remove('open');
+    });
+
+  // Lazy-load this dropdown
+  ul.innerHTML = generateAlphabetItems(id, parseInt(container.dataset.level) + 1);
   loadedDropdowns.add(id);
+
+  // Open this dropdown
+  ul.classList.add('open');
 }
+
 
 function initDropdown() {
   const rootContainer = document.querySelector('.root');
@@ -75,15 +98,15 @@ function initDropdown() {
     rootContainer.classList.remove('open');
   });
 
-//   // Toggle root dropdown on button click
-//   rootButton.addEventListener('click', () => {
-//     rootContainer.classList.toggle('open');
-//   });
+rootButton.addEventListener('click', () => {
+  rootContainer.classList.toggle('open');
+});
 
-  // Optional: close root dropdown when mouse leaves
-  rootContainer.addEventListener('mouseleave', () => {
-    rootContainer.classList.remove('open');
-  });
+// Close everything when leaving the root container
+rootContainer.addEventListener('mouseleave', () => {
+  rootContainer.querySelectorAll('.dd-list').forEach(list => list.classList.remove('open'));
+  rootContainer.classList.remove('open');
+});
 }
 
 document.addEventListener('DOMContentLoaded', initDropdown);
