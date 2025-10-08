@@ -158,3 +158,31 @@ textarea{
 .dd-container.root.open {
   display: inline-block;
 }
+
+.send-btn:hover {
+  background-color: #02c07f;
+}
+
+.output-box {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  width: 300px;
+  min-height: 200px;
+  background: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  font-size: 16px;
+  color: #333;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.output-box::before {
+  content: "Output:";
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #555;
+}

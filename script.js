@@ -106,6 +106,14 @@ function initDropdown() {
   rootContainer.classList.add('open');
 });
 
+// --- SEND BUTTON HANDLER ---
+const sendBtn = document.querySelector('.send-btn');
+const outputBox = document.getElementById('outputBox');
+
+sendBtn.addEventListener('click', () => {
+  const text = textbox.value.trim();
+  outputBox.textContent = text ? text : "(sin contenido)";
+});
 
   // Toggle via button (for debug)
   rootButton.addEventListener('click', () => {
