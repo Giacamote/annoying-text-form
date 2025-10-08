@@ -24,7 +24,7 @@ body {
 }
 
 /* Button */
-.dropbtn {
+.dropbtn, .send-btn {
   background-color: #04AA6D;
   color: white;
   padding: 10px 18px;
@@ -140,4 +140,21 @@ textarea{
   background-color: #e7e7e7;
   color: rgb(0, 0, 0);
   resize: none;
+}
+
+.overlap-container{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+.dd-container.root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none; /* hidden until click */
+  z-index: 3000;
+}
+
+.dd-container.root.open {
+  display: inline-block;
 }

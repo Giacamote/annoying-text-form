@@ -1,4 +1,4 @@
-const alphabet = 'abcdefghijklmnñopqrstuvwxyz'.split('');
+const alphabet = ['_', ...'abcdefghijklmnñopqrstuvwxyz'];
 const loadedDropdowns = new Set();
 
 function generateAlphabetItems(parentId, level = 1) {
@@ -12,21 +12,12 @@ function generateAlphabetItems(parentId, level = 1) {
     `;
   }).join('');
 }
-function addHoverListeners(container) {
-  container.querySelectorAll('.dd-item.dd-container').forEach(item => {
-    item.addEventListener('mouseenter', () => {
-      loadDropdownContent(item);
-      const list = item.querySelector('.dd-list');
-      list.classList.add('open');
-    });
-  });
-}
 
 function loadDropdownContent(container) {
   const id = container.dataset.id;
   if (loadedDropdowns.has(id)) return;
 
-  // Determine the path of ancestors (from root to this container)
+  // Determine path of ancestors
   const path = [];
   let current = container;
   while (current && current.classList.contains('dd-item')) {
@@ -34,7 +25,7 @@ function loadDropdownContent(container) {
     current = current.parentElement.closest('.dd-item');
   }
 
-  // Close all sibling dropdowns not in the path
+  // Close siblings not in path
   container.parentElement.querySelectorAll(':scope > .dd-container').forEach(sib => {
     if (!path.includes(sib)) {
       const sibList = sib.querySelector('.dd-list');
@@ -48,24 +39,22 @@ function loadDropdownContent(container) {
     }
   });
 
-  // Lazy-load the hovered container
   const ul = container.querySelector('.dd-list');
   ul.innerHTML = generateAlphabetItems(id, parseInt(container.dataset.level) + 1);
   loadedDropdowns.add(id);
   ul.classList.add('open');
 }
 
-
-
 function initDropdown() {
   const rootContainer = document.querySelector('.root');
   const rootList = rootContainer.querySelector('.dd-list');
   const rootButton = rootContainer.querySelector('.dropbtn');
+  const textbox = document.getElementById('textbox');
 
   rootList.innerHTML = generateAlphabetItems('root', 1);
   loadedDropdowns.add('root');
 
-  // Event delegation for hover to lazy-load
+  // Hover → lazy load
   rootList.addEventListener('mouseenter', e => {
     const container = e.target.closest('.dd-container');
     if (container) {
@@ -73,18 +62,14 @@ function initDropdown() {
       const list = container.querySelector('.dd-list');
       list.classList.add('open');
     }
-  }, true); // capture phase
+  }, true);
 
-  // Event delegation for clicks on letters
+  // Click → add letters
   rootList.addEventListener('click', e => {
     const link = e.target.closest('.dd-link');
     if (!link) return;
-
     e.preventDefault();
 
-    const textbox = document.getElementById('textbox');
-
-    // grab the letters
     const chain = [];
     let current = link.closest('.dd-item');
     while (current && current.classList.contains('dd-item')) {
@@ -95,30 +80,49 @@ function initDropdown() {
 
     textbox.value += chain.join('');
 
-    // erase nested dropdowns
+    // Reset dropdowns
     rootList.querySelectorAll('.dd-list').forEach(list => {
       list.innerHTML = '';
       list.classList.remove('open');
     });
-
-    // reset loadedDropdowns except root
-    loadedDropdowns.forEach(id => {
-      if (id !== 'root') loadedDropdowns.delete(id);
-    });
-
-    // close root dropdown
+    loadedDropdowns.clear();
+    loadedDropdowns.add('root');
     rootContainer.classList.remove('open');
   });
 
-rootButton.addEventListener('click', () => {
-  rootContainer.classList.toggle('open');
+  // Position and open dropdown on textarea click
+  textbox.addEventListener('click', (e) => {
+  e.stopPropagation();
+
+  // Reset the textarea content
+  textbox.value = '';
+
+  // Position dropdown near mouse
+  const x = e.pageX + 1;
+  const y = e.pageY + 1;
+
+  rootContainer.style.left = `${x}px`;
+  rootContainer.style.top = `${y}px`;
+  rootContainer.classList.add('open');
 });
 
-// Close everything when leaving the root container
-rootContainer.addEventListener('mouseleave', () => {
-  rootContainer.querySelectorAll('.dd-list').forEach(list => list.classList.remove('open'));
-  rootContainer.classList.remove('open');
-});
+
+  // Toggle via button (for debug)
+  rootButton.addEventListener('click', () => {
+    rootContainer.classList.toggle('open');
+  });
+
+  // Close when mouse leaves or clicking outside
+  rootContainer.addEventListener('mouseleave', () => {
+    rootContainer.querySelectorAll('.dd-list').forEach(list => list.classList.remove('open'));
+    rootContainer.classList.remove('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dd-container.root') && e.target !== textbox) {
+      rootContainer.classList.remove('open');
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initDropdown);
