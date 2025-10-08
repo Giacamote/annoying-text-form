@@ -26,23 +26,35 @@ function loadDropdownContent(container) {
   const id = container.dataset.id;
   if (loadedDropdowns.has(id)) return;
 
-  const ul = container.querySelector('.dd-list');
+  // Determine the path of ancestors (from root to this container)
+  const path = [];
+  let current = container;
+  while (current && current.classList.contains('dd-item')) {
+    path.unshift(current);
+    current = current.parentElement.closest('.dd-item');
+  }
 
-  // Close sibling dropdowns
-  Array.from(container.parentElement.children)
-    .filter(c => c !== container && c.classList.contains('dd-container'))
-    .forEach(sib => {
+  // Close all sibling dropdowns not in the path
+  container.parentElement.querySelectorAll(':scope > .dd-container').forEach(sib => {
+    if (!path.includes(sib)) {
       const sibList = sib.querySelector('.dd-list');
-      if (sibList) sibList.classList.remove('open');
-    });
+      if (sibList) {
+        sibList.innerHTML = '';
+        sibList.classList.remove('open');
+      }
+      loadedDropdowns.forEach(id => {
+        if (!path.some(p => p.dataset.id === id) && id !== 'root') loadedDropdowns.delete(id);
+      });
+    }
+  });
 
-  // Lazy-load this dropdown
+  // Lazy-load the hovered container
+  const ul = container.querySelector('.dd-list');
   ul.innerHTML = generateAlphabetItems(id, parseInt(container.dataset.level) + 1);
   loadedDropdowns.add(id);
-
-  // Open this dropdown
   ul.classList.add('open');
 }
+
 
 
 function initDropdown() {
