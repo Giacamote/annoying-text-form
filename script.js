@@ -7,7 +7,7 @@ function generateAlphabetItems(parentId, level = 1) {
     return `
       <li class="dd-item dd-container" data-id="${id}" data-level="${level}">
         <a href="#" class="dd-link">${letter} &#9656;</a>
-        <ul class="dd-list"><li class="dd-loading">Cargando...</li></ul>
+        <ul class="dd-list"></ul>
       </li>
     `;
   }).join('');
@@ -19,29 +19,71 @@ function loadDropdownContent(container) {
 
   const ul = container.querySelector('.dd-list');
   ul.innerHTML = generateAlphabetItems(id, (parseInt(container.dataset.level) || 1) + 1);
-  addEventListeners(ul);
   loadedDropdowns.add(id);
 }
 
-function addEventListeners(root) {
-  root.querySelectorAll('.dd-container').forEach(c => {
-    c.addEventListener('mouseenter', () => loadDropdownContent(c));
-  });
-
-  root.querySelectorAll('.dd-link').forEach(link => {
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      const letter = link.textContent.trim().charAt(0);
-      document.getElementById('textbox').value += letter;
-    });
-  });
-}
-
 function initDropdown() {
-  const rootList = document.querySelector('.root .dd-list');
+  const rootContainer = document.querySelector('.root');
+  const rootList = rootContainer.querySelector('.dd-list');
+  const rootButton = rootContainer.querySelector('.dropbtn');
+
   rootList.innerHTML = generateAlphabetItems('root', 1);
-  addEventListeners(rootList);
   loadedDropdowns.add('root');
+
+  // Event delegation for hover to lazy-load
+  rootList.addEventListener('mouseenter', e => {
+    const container = e.target.closest('.dd-container');
+    if (container) {
+      loadDropdownContent(container);
+      const list = container.querySelector('.dd-list');
+      list.classList.add('open');
+    }
+  }, true); // capture phase
+
+  // Event delegation for clicks on letters
+  rootList.addEventListener('click', e => {
+    const link = e.target.closest('.dd-link');
+    if (!link) return;
+
+    e.preventDefault();
+
+    const textbox = document.getElementById('textbox');
+
+    // grab the letters
+    const chain = [];
+    let current = link.closest('.dd-item');
+    while (current && current.classList.contains('dd-item')) {
+      const letterLink = current.querySelector(':scope > .dd-link');
+      if (letterLink) chain.unshift(letterLink.textContent.trim().charAt(0));
+      current = current.parentElement.closest('.dd-item');
+    }
+
+    textbox.value += chain.join('');
+
+    // erase nested dropdowns
+    rootList.querySelectorAll('.dd-list').forEach(list => {
+      list.innerHTML = '';
+      list.classList.remove('open');
+    });
+
+    // reset loadedDropdowns except root
+    loadedDropdowns.forEach(id => {
+      if (id !== 'root') loadedDropdowns.delete(id);
+    });
+
+    // close root dropdown
+    rootContainer.classList.remove('open');
+  });
+
+//   // Toggle root dropdown on button click
+//   rootButton.addEventListener('click', () => {
+//     rootContainer.classList.toggle('open');
+//   });
+
+  // Optional: close root dropdown when mouse leaves
+  rootContainer.addEventListener('mouseleave', () => {
+    rootContainer.classList.remove('open');
+  });
 }
 
 document.addEventListener('DOMContentLoaded', initDropdown);

@@ -90,10 +90,10 @@ body {
 }
 
 /* Show dropdowns on hover */
-.dd-item.dd-container:hover > .dd-list,
+/* .dd-item.dd-container:hover > .dd-list,
 .dd-container.root:hover > .dd-list {
   display: block;
-}
+} */
 
 /* Button hover */
 .dd-container:hover > .dropbtn {
@@ -120,4 +120,36 @@ body {
 .dd-item.dd-container:hover > .dd-link {
   background-color: #7bfbb0 ; /* same as hover */
   color: #000;
+}
+
+.dd-container.root .dd-list {
+  display: none;
+}
+
+.dd-container.root.open .dd-list {
+  display: block;
+}
+/* Default hidden */
+.dd-list {
+  display: none;
+}
+
+/* Show on hover OR if explicitly open */
+.dd-container:hover > .dd-list,
+.dd-list.open {
+  display: block;
+}
+
+.dd-list {
+  display: none;
+}
+
+/* Show only if parent is hovered AND it's open (for nested ones) */
+.dd-container:hover > .dd-list.open {
+  display: block;
+}
+
+/* Root dropdown can also open manually */
+.root > .dd-list.open {
+  display: block;
 }
